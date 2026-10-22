@@ -1,0 +1,573 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dolphins - Reading & Activity Test</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for ocean & fun icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Fredoka & Quicksand for a child-friendly aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti Library for celebratory score screen -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ocean: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            800: '#0c4a6e',
+                        },
+                        seaweed: '#10b981',
+                        coral: '#ff70a6',
+                        sunshine: '#ffd166',
+                    },
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'cursive', 'sans-serif'],
+                        quicksand: ['Quicksand', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(180deg, #e0f2fe 0%, #bae6fd 50%, #7dd3fc 100%);
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4, button, .font-heading {
+            font-family: 'Fredoka', cursive, sans-serif;
+        }
+
+        /* Custom scrollbar for passage */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f0f9ff;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #38bdf8;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #0284c7;
+        }
+
+        /* Floating bubble animation */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); opacity: 0.8; }
+            50% { transform: translateY(-15px) rotate(3deg); opacity: 1; }
+            100% { transform: translateY(0px) rotate(0deg); opacity: 0.8; }
+        }
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(-10px); }
+        }
+        .animate-wave {
+            animation: wave 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="text-slate-800 p-3 sm:p-6 md:p-8 relative">
+
+    <!-- Top Water Decoration Header -->
+    <header class="max-w-6xl mx-auto mb-6 bg-white/90 backdrop-blur-md rounded-3xl p-4 sm:p-6 shadow-xl border-4 border-ocean-300 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3 text-center sm:text-left">
+            <div class="w-14 h-14 sm:w-16 sm:h-16 bg-ocean-400 rounded-2xl flex items-center justify-center text-white text-3xl shadow-md transform hover:scale-105 transition-transform">
+                <i class="fa-solid font-awesome fa-water animate-pulse"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl sm:text-4xl text-ocean-700 font-bold tracking-wide">Dolphin Reading Quest!</h1>
+                <p class="text-ocean-600 text-sm sm:text-base font-semibold">Read the story and answer the fun questions below 🐬</p>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-2 bg-ocean-100 px-4 py-2 rounded-2xl border-2 border-ocean-200">
+            <i class="fa-solid fa-star text-sunshine text-2xl animate-spin" style="animation-duration: 8s;"></i>
+            <span class="text-ocean-800 font-bold text-sm sm:text-base">14 Questions Total</span>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-start pb-12">
+
+        <!-- Passage Column (Left on Large screens) -->
+        <section id="passageSection" class="lg:col-span-5 bg-white/95 rounded-3xl p-5 sm:p-7 shadow-xl border-4 border-ocean-300 lg:sticky lg:top-6 max-h-[85vh] flex flex-col transition-all">
+            <div class="flex items-center justify-between border-b-2 border-ocean-100 pb-3 mb-4">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-book-open text-ocean-500 text-xl"></i>
+                    <h2 class="text-xl sm:text-2xl font-bold text-ocean-700">Reading Passage</h2>
+                </div>
+                <span class="bg-ocean-100 text-ocean-700 text-xs font-bold px-3 py-1 rounded-full border border-ocean-200">
+                    Dolphins 🐬
+                </span>
+            </div>
+
+            <!-- Scrollable Reading Text -->
+            <div class="overflow-y-auto custom-scrollbar pr-2 space-y-4 text-slate-700 leading-relaxed text-sm sm:text-base">
+                <div class="bg-ocean-50 p-4 rounded-2xl border-2 border-ocean-100 mb-2">
+                    <h3 class="text-lg font-bold text-ocean-800 text-center mb-1">Dolphins</h3>
+                    <p class="text-xs text-center text-ocean-600 italic">Read carefully before answering!</p>
+                </div>
+
+                <p>
+                    Dolphins live in the sea, but they are mammals, not fish. This means that they give birth to live young, rather than laying eggs like fish, and the mother dolphin feeds her young with milk from her body. Like other mammals, dolphins have lungs and breathe air. In fact, they must come to the surface once or twice every minute in order to take a breath. Dolphins breathe through the hole in the top of their head, which is called a blowhole.
+                </p>
+                
+                <p>
+                    Dolphins are known for being very clever animals, and many scientists believe that dolphins are one of the most intelligent animals in the world.
+                </p>
+
+                <!-- Fun Image / Illustration Banner -->
+                <div class="my-4 bg-gradient-to-r from-ocean-300 to-cyan-300 p-4 rounded-2xl text-center text-white shadow-inner flex flex-col items-center justify-center">
+                    <i class="fa-solid fa-fish text-4xl mb-2 text-white/90 animate-float"></i>
+                    <p class="text-xs font-bold uppercase tracking-wider text-ocean-900">Did You Know?</p>
+                    <p class="text-xs sm:text-sm font-medium text-ocean-900">Dolphins turn somersaults and swim alongside ships!</p>
+                </div>
+
+                <p>
+                    The bottle-nosed dolphin is probably the best-known type of dolphin. Its short, upturned beak makes it look like it is smiling. Bottle-nosed dolphins are grey all over, but their backs are a darker shade than their undersides. Bottle-nosed dolphins live in warm, shallow waters and usually stay quite close to land.
+                </p>
+
+                <p>
+                    The other well-known type of dolphin is the common dolphin. This dolphin has a dark band around its eyes, which spreads to the end of its long, narrow beak. Common dolphins have black backs, white undersides, and grey and brown stripes on their sides. They can sometimes be found swimming in large groups, called 'schools', and they are often seen in the open ocean.
+                </p>
+
+                <p>
+                    Both bottle-nosed and common dolphins like to swim alongside ships. As they do so, they may leap out of the water and turn somersaults. Since ancient times, many sailors have believed that seeing a dolphin is lucky. They think that if they see a dolphin near the ship, it means the voyage will go well and they will return home safely.
+                </p>
+            </div>
+        </section>
+
+        <!-- Questions Worksheet Column (Right on Large screens) -->
+        <section id="quizFormSection" class="lg:col-span-7 space-y-6">
+
+            <form id="activityForm" onsubmit="submitQuiz(event)">
+
+                <!-- SECTION A: TRUE OR FALSE -->
+                <div class="bg-white/95 rounded-3xl p-5 sm:p-7 shadow-xl border-4 border-ocean-300 mb-6">
+                    <div class="flex items-center gap-3 border-b-2 border-ocean-100 pb-3 mb-5">
+                        <div class="w-10 h-10 bg-ocean-500 rounded-xl flex items-center justify-center text-white font-bold text-lg">
+                            A
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-ocean-800">Write true or false</h2>
+                            <p class="text-xs sm:text-sm text-slate-500">Read each sentence and decide if it is True or False.</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4" id="sectionAQuestions">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- SECTION B: UNSCRAMBLE SENTENCES -->
+                <div class="bg-white/95 rounded-3xl p-5 sm:p-7 shadow-xl border-4 border-ocean-300 mb-6">
+                    <div class="flex items-center gap-3 border-b-2 border-ocean-100 pb-3 mb-5">
+                        <div class="w-10 h-10 bg-coral rounded-xl flex items-center justify-center text-white font-bold text-lg">
+                            B
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-ocean-800">Unscramble these sentences</h2>
+                            <p class="text-xs sm:text-sm text-coral-600 font-semibold">
+                                <i class="fa-solid fa-lightbulb"></i> Do not forget capital letters and full stops!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6" id="sectionBQuestions">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Submit Button Bar -->
+                <div class="bg-white/90 backdrop-blur-md rounded-3xl p-4 shadow-xl border-4 border-ocean-300 flex items-center justify-between">
+                    <span class="text-xs sm:text-sm text-slate-500 font-medium pl-2">
+                        <i class="fa-solid fa-circle-info text-ocean-400 mr-1"></i> Check all answers before submitting!
+                    </span>
+                    <button type="submit" class="bg-gradient-to-r from-seaweed to-emerald-500 hover:from-emerald-600 hover:to-seaweed text-white font-bold text-lg px-8 py-3 rounded-2xl shadow-lg transform active:scale-95 transition-all flex items-center gap-2">
+                        <span>Submit Answers</span>
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+
+            </form>
+        </section>
+
+        <!-- SCORESHEET / RESULT SECTION (Hidden initially) -->
+        <section id="resultsSection" class="hidden lg:col-span-12 space-y-6">
+            
+            <!-- Overall Score Banner -->
+            <div id="scoreBanner" class="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border-4 border-ocean-400 text-center relative overflow-hidden">
+                <div class="absolute -top-10 -left-10 w-32 h-32 bg-ocean-100 rounded-full blur-xl"></div>
+                <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-sunshine/30 rounded-full blur-xl"></div>
+
+                <div class="relative z-10">
+                    <div id="badgeContainer" class="w-24 h-24 mx-auto mb-3 bg-sunshine text-white rounded-full flex items-center justify-center text-5xl shadow-lg transform hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-ocean-800 mb-1" id="scoreFeedbackTitle">Awesome Job!</h2>
+                    <p class="text-slate-600 text-sm sm:text-base font-semibold mb-4" id="scoreFeedbackSub">Here is how you performed on your Dolphin Quest:</p>
+
+                    <!-- Score Cards Row -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto my-6">
+                        <div class="bg-ocean-50 border-2 border-ocean-200 p-4 rounded-2xl text-center">
+                            <span class="block text-xs uppercase font-bold text-ocean-500">Total Score</span>
+                            <span class="text-3xl sm:text-4xl font-black text-ocean-700" id="totalScoreText">0 / 14</span>
+                        </div>
+                        <div class="bg-emerald-50 border-2 border-emerald-200 p-4 rounded-2xl text-center">
+                            <span class="block text-xs uppercase font-bold text-emerald-600">Percentage</span>
+                            <span class="text-3xl sm:text-4xl font-black text-emerald-600" id="percentageText">0%</span>
+                        </div>
+                        <div class="bg-purple-50 border-2 border-purple-200 p-4 rounded-2xl text-center">
+                            <span class="block text-xs uppercase font-bold text-purple-600">Rating</span>
+                            <div class="text-2xl text-sunshine mt-1" id="starRating">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Breakdown per section -->
+                    <div class="flex flex-wrap justify-center gap-4 text-xs sm:text-sm font-bold text-slate-600 mb-6">
+                        <span class="bg-ocean-100 px-4 py-2 rounded-xl border border-ocean-200">
+                            Section A (True/False): <span id="secAScore" class="text-ocean-700">0/8</span>
+                        </span>
+                        <span class="bg-coral/10 px-4 py-2 rounded-xl border border-coral/30">
+                            Section B (Unscramble): <span id="secBScore" class="text-coral-700">0/6</span>
+                        </span>
+                    </div>
+
+                    <button onclick="retryQuiz()" class="bg-ocean-500 hover:bg-ocean-600 text-white font-bold px-8 py-3 rounded-2xl shadow-lg transition-transform active:scale-95 inline-flex items-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>Try Again</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Detailed Question Review List -->
+            <div class="bg-white/95 rounded-3xl p-5 sm:p-8 shadow-xl border-4 border-ocean-300 space-y-6">
+                <div class="border-b-2 border-ocean-100 pb-3 flex items-center justify-between">
+                    <h3 class="text-2xl font-bold text-ocean-800">Detailed Answer Review</h3>
+                    <span class="text-xs sm:text-sm text-slate-500 font-semibold">Review your answers and learn!</span>
+                </div>
+
+                <div id="reviewList" class="space-y-4">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="max-w-6xl mx-auto text-center text-ocean-800 text-xs sm:text-sm font-medium py-4">
+        <p>🐬 Happy Learning! Dolphins are intelligent and wonderful marine mammals.</p>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Data structure for Section A (True / False)
+        const sectionAData = [
+            { id: 1, text: "Dolphins are fish, not mammals.", answer: "false", explanation: "The passage says: 'Dolphins live in the sea, but they are mammals, not fish.'" },
+            { id: 2, text: "Dolphins must come to the surface to breathe.", answer: "true", explanation: "The passage states: 'they must come to the surface once or twice every minute in order to take a breath.'" },
+            { id: 3, text: "The bottle-nosed dolphin looks like it is smiling.", answer: "true", explanation: "The passage says: 'Its short, upturned beak makes it look like it is smiling.'" },
+            { id: 4, text: "The bottle-nosed dolphin is brown.", answer: "false", explanation: "The passage states: 'Bottle-nosed dolphins are grey all over, but their backs are a darker shade...'" },
+            { id: 5, text: "Common dolphins are often seen in the open ocean.", answer: "true", explanation: "The passage says: 'and they are often seen in the open ocean.'" },
+            { id: 6, text: "Dolphins like to swim alongside ships.", answer: "true", explanation: "The passage states: 'Both bottle-nosed and common dolphins like to swim alongside ships.'" },
+            { id: 7, text: "Many sailors believe that seeing a dolphin is unlucky.", answer: "false", explanation: "The passage says: 'many sailors have believed that seeing a dolphin is lucky.'" },
+            { id: 8, text: "The common dolphin has a dark band around its eyes.", answer: "true", explanation: "The passage states: 'This dolphin has a dark band around its eyes...'" }
+        ];
+
+        // Data structure for Section B (Sentence Unscramble)
+        const sectionBData = [
+            { id: 1, scrambled: "dolphins the in sea live", exact: "Dolphins live in the sea.", hint: "Capitalize 'Dolphins' and end with a period." },
+            { id: 2, scrambled: "lungs breathe dolphins and air have", exact: "Dolphins have lungs and breathe air.", hint: "Capitalize 'Dolphins' and end with a period." },
+            { id: 3, scrambled: "stay dolphins close bottle-nosed to land", exact: "Bottle-nosed dolphins stay close to land.", hint: "Capitalize 'Bottle-nosed' and end with a period." },
+            { id: 4, scrambled: "swim dolphins in schools common", exact: "Common dolphins swim in schools.", hint: "Capitalize 'Common' and end with a period." },
+            { id: 5, scrambled: "many think dolphins sailors lucky are", exact: "Many sailors think dolphins are lucky.", hint: "Capitalize 'Many' and end with a period." },
+            { id: 6, scrambled: "very are dolphins intelligent", exact: "Dolphins are very intelligent.", hint: "Capitalize 'Dolphins' and end with a period." }
+        ];
+
+        // Render Questions on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            renderSectionA();
+            renderSectionB();
+        });
+
+        function renderSectionA() {
+            const container = document.getElementById('sectionAQuestions');
+            container.innerHTML = sectionAData.map((q, index) => `
+                <div class="p-4 rounded-2xl bg-ocean-50/60 border border-ocean-100 hover:border-ocean-300 transition-colors">
+                    <p class="font-semibold text-slate-800 text-sm sm:text-base mb-3">
+                        <span class="text-ocean-600 font-bold mr-1">${index + 1}.</span> ${q.text}
+                    </p>
+                    <div class="flex items-center gap-6">
+                        <label class="inline-flex items-center gap-2 cursor-pointer bg-white px-4 py-2 rounded-xl border border-slate-200 hover:border-ocean-400 transition-all text-sm font-bold text-slate-700">
+                            <input type="radio" name="secA_${q.id}" value="true" class="w-4 h-4 text-ocean-600 focus:ring-ocean-400">
+                            <span>True</span>
+                        </label>
+                        <label class="inline-flex items-center gap-2 cursor-pointer bg-white px-4 py-2 rounded-xl border border-slate-200 hover:border-ocean-400 transition-all text-sm font-bold text-slate-700">
+                            <input type="radio" name="secA_${q.id}" value="false" class="w-4 h-4 text-ocean-600 focus:ring-ocean-400">
+                            <span>False</span>
+                        </label>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderSectionB() {
+            const container = document.getElementById('sectionBQuestions');
+            container.innerHTML = sectionBData.map((q, index) => `
+                <div class="p-4 rounded-2xl bg-coral/5 border border-coral/20 hover:border-coral/40 transition-colors">
+                    <div class="mb-2">
+                        <span class="text-xs font-bold uppercase tracking-wider text-coral-600 bg-coral/10 px-2 py-0.5 rounded-md">Scrambled Words</span>
+                        <p class="font-bold text-slate-800 text-base sm:text-lg mt-1 italic text-ocean-800">
+                            "${q.scrambled}"
+                        </p>
+                    </div>
+                    
+                    <label for="secB_${q.id}" class="block text-xs text-slate-500 font-medium mb-1">Unscramble & write full sentence below:</label>
+                    <input type="text" 
+                           id="secB_${q.id}" 
+                           name="secB_${q.id}" 
+                           placeholder="Type your sentence here..." 
+                           autocomplete="off"
+                           class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-coral focus:ring-2 focus:ring-coral/20 text-slate-800 font-semibold outline-none transition-all text-sm sm:text-base">
+                </div>
+            `).join('');
+        }
+
+        // Helper string normalizer for auto-grading
+        function normalizeText(str) {
+            return str
+                .trim()
+                .toLowerCase()
+                .replace(/\s+/g, ' '); // collapse extra spaces
+        }
+
+        // Helper to check capitalization and punctuation strictly or loosely
+        function evaluateSentence(userStr, targetStr) {
+            const cleanUser = normalizeText(userStr);
+            const cleanTarget = normalizeText(targetStr);
+
+            if (cleanUser === '') return { isCorrect: false, missingPunctuation: false, missingCapital: false };
+
+            const isExactMatch = userStr.trim() === targetStr.trim();
+            const isContentMatch = cleanUser === cleanTarget;
+
+            // Check specific details for kid feedback
+            const startsWithCap = userStr.trim().charAt(0) === targetStr.trim().charAt(0).toUpperCase();
+            const endsWithPeriod = userStr.trim().endsWith('.');
+
+            return {
+                isCorrect: isContentMatch,
+                isPerfect: isExactMatch,
+                missingCapital: !startsWithCap,
+                missingPunctuation: !endsWithPeriod
+            };
+        }
+
+        function submitQuiz(event) {
+            event.preventDefault();
+
+            let scoreA = 0;
+            let scoreB = 0;
+            const reviews = [];
+
+            // Evaluate Section A
+            sectionAData.forEach((q, idx) => {
+                const selectedRadio = document.querySelector(`input[name="secA_${q.id}"]:checked`);
+                const userVal = selectedRadio ? selectedRadio.value : 'unanswered';
+                const isCorrect = userVal === q.answer;
+
+                if (isCorrect) scoreA++;
+
+                reviews.push({
+                    section: 'A',
+                    num: idx + 1,
+                    question: q.text,
+                    userAnswer: userVal === 'unanswered' ? 'Not Answered' : userVal.toUpperCase(),
+                    correctAnswer: q.answer.toUpperCase(),
+                    isCorrect: isCorrect,
+                    explanation: q.explanation
+                });
+            });
+
+            // Evaluate Section B
+            sectionBData.forEach((q, idx) => {
+                const inputEl = document.getElementById(`secB_${q.id}`);
+                const userVal = inputEl ? inputEl.value : '';
+                const result = evaluateSentence(userVal, q.exact);
+
+                if (result.isCorrect) scoreB++;
+
+                let feedbackNote = '';
+                if (result.isCorrect) {
+                    if (result.missingCapital && result.missingPunctuation) {
+                        feedbackNote = "Great sentence! Remember to capitalize the first letter and put a full stop at the end next time.";
+                    } else if (result.missingCapital) {
+                        feedbackNote = "Good job! Just remember to capitalize the first letter.";
+                    } else if (result.missingPunctuation) {
+                        feedbackNote = "Almost perfect! Don't forget the full stop (.) at the end.";
+                    } else {
+                        feedbackNote = "Perfect capitalization and punctuation! 🌟";
+                    }
+                } else {
+                    feedbackNote = `Correct form: "${q.exact}"`;
+                }
+
+                reviews.push({
+                    section: 'B',
+                    num: idx + 1,
+                    scrambled: q.scrambled,
+                    userAnswer: userVal.trim() === '' ? 'Not Answered' : userVal,
+                    correctAnswer: q.exact,
+                    isCorrect: result.isCorrect,
+                    feedbackNote: feedbackNote,
+                    explanation: q.hint
+                });
+            });
+
+            const totalScore = scoreA + scoreB;
+            const totalQuestions = sectionAData.length + sectionBData.length;
+            const percentage = Math.round((totalScore / totalQuestions) * 100);
+
+            // Hide form and passage, show Results screen
+            document.getElementById('quizFormSection').classList.add('hidden');
+            document.getElementById('passageSection').classList.add('hidden');
+            document.getElementById('resultsSection').classList.remove('hidden');
+
+            // Scroll smoothly to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Display Scores
+            document.getElementById('totalScoreText').innerText = `${totalScore} / ${totalQuestions}`;
+            document.getElementById('percentageText').innerText = `${percentage}%`;
+            document.getElementById('secAScore').innerText = `${scoreA} / ${sectionAData.length}`;
+            document.getElementById('secBScore').innerText = `${scoreB} / ${sectionBData.length}`;
+
+            // Title & Stars based on percentage
+            const titleEl = document.getElementById('scoreFeedbackTitle');
+            const starsContainer = document.getElementById('starRating');
+            const badgeContainer = document.getElementById('badgeContainer');
+
+            if (percentage >= 90) {
+                titleEl.innerText = "🌟 Spectacular Job!";
+                starsContainer.innerHTML = '<i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>';
+                badgeContainer.className = "w-24 h-24 mx-auto mb-3 bg-sunshine text-white rounded-full flex items-center justify-center text-5xl shadow-lg animate-bounce";
+                triggerConfetti();
+            } else if (percentage >= 70) {
+                titleEl.innerText = "🐬 Great Work!";
+                starsContainer.innerHTML = '<i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>';
+                badgeContainer.className = "w-24 h-24 mx-auto mb-3 bg-ocean-400 text-white rounded-full flex items-center justify-center text-5xl shadow-lg";
+                triggerConfetti();
+            } else {
+                titleEl.innerText = "🌊 Good Try! Keep Practicing!";
+                starsContainer.innerHTML = '<i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>';
+                badgeContainer.className = "w-24 h-24 mx-auto mb-3 bg-coral text-white rounded-full flex items-center justify-center text-5xl shadow-lg";
+            }
+
+            // Render Detailed Review List
+            renderReviewList(reviews);
+        }
+
+        function renderReviewList(reviews) {
+            const container = document.getElementById('reviewList');
+            container.innerHTML = reviews.map(r => {
+                const isSecA = r.section === 'A';
+                return `
+                    <div class="p-4 sm:p-5 rounded-2xl border-2 ${r.isCorrect ? 'bg-emerald-50/50 border-emerald-200' : 'bg-red-50/50 border-red-200'}">
+                        <div class="flex items-start justify-between gap-3 mb-2">
+                            <span class="text-xs font-bold uppercase tracking-wide ${isSecA ? 'bg-ocean-100 text-ocean-800' : 'bg-coral/20 text-coral-800'} px-2.5 py-1 rounded-lg">
+                                Section ${r.section} - Q${r.num}
+                            </span>
+                            <span class="inline-flex items-center gap-1 text-sm font-extrabold ${r.isCorrect ? 'text-emerald-600' : 'text-red-600'}">
+                                ${r.isCorrect ? '<i class="fa-solid fa-circle-check"></i> Correct' : '<i class="fa-solid fa-circle-xmark"></i> Needs Improvement'}
+                            </span>
+                        </div>
+
+                        ${isSecA ? `
+                            <p class="font-bold text-slate-800 text-sm sm:text-base mb-2">${r.question}</p>
+                        ` : `
+                            <p class="font-bold text-slate-800 text-sm sm:text-base mb-1">Scrambled: "${r.scrambled}"</p>
+                        `}
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm my-2">
+                            <div class="bg-white p-2.5 rounded-xl border border-slate-200">
+                                <span class="text-slate-400 font-bold block text-[10px] uppercase">Your Answer</span>
+                                <span class="font-semibold ${r.isCorrect ? 'text-emerald-700' : 'text-red-700'}">${r.userAnswer}</span>
+                            </div>
+                            <div class="bg-white p-2.5 rounded-xl border border-slate-200">
+                                <span class="text-slate-400 font-bold block text-[10px] uppercase">Expected Answer</span>
+                                <span class="font-semibold text-ocean-800">${r.correctAnswer}</span>
+                            </div>
+                        </div>
+
+                        ${r.explanation ? `
+                            <p class="text-xs text-slate-600 bg-white/70 p-2.5 rounded-xl border border-slate-100 mt-2">
+                                <i class="fa-solid fa-circle-info text-ocean-500 mr-1"></i> ${r.explanation}
+                            </p>
+                        ` : ''}
+
+                        ${r.feedbackNote ? `
+                            <p class="text-xs text-coral-700 font-semibold mt-1">
+                                💡 ${r.feedbackNote}
+                            </p>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function triggerConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        function retryQuiz() {
+            // Reset form
+            document.getElementById('activityForm').reset();
+            
+            // Show activity form and passage, hide results
+            document.getElementById('resultsSection').classList.add('hidden');
+            document.getElementById('quizFormSection').classList.remove('hidden');
+            document.getElementById('passageSection').classList.remove('hidden');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
+```
